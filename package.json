@@ -1,0 +1,19 @@
+{
+  "name": "hamontjs-pusher-app",
+  "version": "1.0.0",
+  "description": "A demonstration app for HamOntJS, featuring Pusher.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshgaber/hamontjs-pusher-app.git"
+  },
+  "author": "Josh Gaber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joshgaber/hamontjs-pusher-app/issues"
+  },
+  "homepage": "https://github.com/joshgaber/hamontjs-pusher-app#readme"
+}
