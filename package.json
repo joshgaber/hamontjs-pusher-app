@@ -17,6 +17,11 @@
   },
   "homepage": "https://github.com/joshgaber/hamontjs-pusher-app#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pusher": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^6.1.2"
   }
 }
