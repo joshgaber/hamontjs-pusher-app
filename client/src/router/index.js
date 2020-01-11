@@ -1,25 +1,24 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Dashboard from '../views/Dashboard.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import JellybeanHome from '../views/Jellybean/Home.vue';
+import JellybeanDashboard from '../views/Jellybean/Dashboard.vue';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: Home
+    path: '/jellybean',
+    name: 'jellybean-home',
+    component: JellybeanHome,
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: Dashboard
-  }
-]
+    path: '/jellybean/dashboard',
+    name: 'jellybean-dashboard',
+    component: JellybeanDashboard,
+  },
+];
 
-const router = new VueRouter({
-  routes
-})
-
-export default router
+export default new VueRouter({
+  mode: 'history',
+  routes,
+});
