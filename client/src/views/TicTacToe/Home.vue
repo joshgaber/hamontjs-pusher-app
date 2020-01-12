@@ -53,26 +53,43 @@
         <h2 class="text-2xl">
           <span v-if="O === null">Waiting for player...</span>
           <span v-else-if="winner">{{ winner }} is the winner!</span>
+          <span v-else-if="boardFull">It's a stalemate</span>
           <span v-else-if="myTurn">It's your turn</span>
-          <span v-else>Waiting for {{ O }} to play</span>
+          <span v-else>Waiting for {{ whoseTurn }} to play</span>
         </h2>
-        <div class="flex flex-col">
-          <div
-            v-for="(h, hindex) in grid"
-            :key="hindex"
-            class="flex"
-            :class="{ 'border-t-2': hindex }"
-          >
-            <div
-              v-for="(v, vindex) in h"
-              :key="vindex"
-              v-text="v"
-              class="h-16 w-16"
-              :class="{ 'border-l-2': vindex }"
-            ></div>
+        <div class="flex justify-around">
+          <div class="lg:w-1/2 flex content-center justify-center">
+            <div class="flex flex-col">
+              <div
+                v-for="(h, hindex) in grid"
+                :key="hindex"
+                class="flex"
+                :class="{ 'border-t-2': hindex }"
+              >
+                <div
+                  v-for="(v, vindex) in h"
+                  :key="vindex"
+                  v-text="v"
+                  class="h-20 w-20 p-2 leading-none text-6xl select-none"
+                  :class="{
+                    'border-l-2': vindex,
+                    'cursor-pointer hover:bg-gray-100':
+                      grid[hindex][vindex] === null && marker,
+                  }"
+                  @click="placeToken(hindex, vindex)"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden lg:block lg:w-1/2">
+            <div v-if="X"><strong>X:</strong> {{ X }}</div>
+            <div v-if="O"><strong>O:</strong> {{ O }}</div>
+            <div v-if="observers.length">
+              <strong>Observers:</strong> {{ observers.join(', ') }}
+            </div>
           </div>
         </div>
-        <div class="text-2xl">
+        <div class="text-lg lg:text-2xl">
           Log in at {{ gameURL }} - Game ID: {{ gameId }}
         </div>
       </div>
@@ -122,9 +139,26 @@ export default {
     },
 
     updateGame(data) {
-      if (data.O) {
-        this.O = data.O;
-      }
+      Object.keys(data).forEach(i => (this[i] = data[i]));
+    },
+
+    placeToken(h, v) {
+      if (
+        this.winner ||
+        this.boardFull ||
+        !this.myTurn ||
+        this.grid[h][v] !== null
+      )
+        return;
+
+      axios.post(
+        process.env.VUE_APP_API + '/api/tictactoe/' + this.gameId + '/place',
+        {
+          h,
+          v,
+          marker: this.marker,
+        },
+      );
     },
   },
   computed: {
@@ -138,7 +172,10 @@ export default {
       return process.env.VUE_APP_HOST + '/tictactoe';
     },
     myTurn() {
-      return this[this.turn] === this.name;
+      return this.marker === this.turn;
+    },
+    whoseTurn() {
+      return this[this.turn];
     },
     winner() {
       if (
@@ -188,6 +225,15 @@ export default {
       }
 
       return null;
+    },
+    boardFull() {
+      return this.grid.reduce(
+        (hfull, h) =>
+          !hfull
+            ? hfull
+            : h.reduce((vfull, v) => (!vfull ? vfull : v !== null), true),
+        true,
+      );
     },
   },
   mounted() {
