@@ -36,10 +36,12 @@ router.post('/api/tictactoe/join', function(req, res) {
         [null, null, null],
         [null, null, null],
       ],
+      turn: 'X',
       observers: [],
     };
 
     response = games[gameId];
+    response.marker = 'X';
   }
 
   res.json(response);
@@ -49,6 +51,6 @@ const newGameId = () =>
   Array(4)
     .fill(0)
     .map(() => Math.floor(Math.random() * 26 + 10).toString(36))
-    .join();
+    .join('');
 
 module.exports = router;
