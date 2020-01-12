@@ -76,21 +76,30 @@ export default {
         [null, null, null],
       ],
       marker: null,
-      turn: 'X',
+      turn: null,
     };
   },
   methods: {
     async joinGame(game = null) {
-      await axios.post(process.env.VUE_APP_API + '/api/tictactoe/join', {
-        name: this.name,
-        game,
-      });
+      const response = await axios.post(
+        process.env.VUE_APP_API + '/api/tictactoe/join',
+        {
+          name: this.name,
+          game,
+        },
+      );
+
+      this.gameId = response.gameId;
+      this.marker = response.marker;
+      this.grid = response.grid;
+      this.turn = response.turn;
+
       this.pusher
         .subscribe('hamontjs')
         .bind('tictactoe-' + this.game, this.receiveAnswer);
     },
 
-    receiveAnswer(data) {
+    updateGame(data) {
       this.results = data;
       this.stage = 'results';
     },
