@@ -21,7 +21,7 @@ router.post('/api/tictactoe/join', function(req, res) {
       response = games[game];
       response.marker = null;
       pusher.trigger('hamontjs', 'tictactoe-' + game, {
-        observer: name,
+        observers: games[game].observers,
       });
     }
   } else {
@@ -44,6 +44,21 @@ router.post('/api/tictactoe/join', function(req, res) {
   }
 
   res.json(response);
+});
+
+router.post('/api/tictactoe/:game/place', function(req, res) {
+  let gameId = req.params.game.toLowerCase();
+  let gameBoard = games[gameId];
+
+  gameBoard.grid[req.body.h][req.body.v] = req.body.marker.toUpperCase();
+  gameBoard.turn = gameBoard.turn === 'X' ? 'O' : 'X';
+
+  pusher.trigger('hamontjs', 'tictactoe-' + gameId, {
+    turn: gameBoard.turn,
+    grid: gameBoard.grid,
+  });
+
+  res.send();
 });
 
 const newGameId = () =>
