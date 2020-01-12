@@ -47,12 +47,34 @@
     </div>
     <div
       v-show="gameId"
-      class="h-full w-full bg-yellow-400 flex content-center justify-center"
+      class="h-full w-full flex content-center justify-center"
     >
-      <div class="container mx-auto flex flex-col justify-center">
-        <h2 style="font-size: 8rem"><i class="fa fa-hourglass-half"></i></h2>
-        <div class="text-4xl">Okay, your guess has been logged.</div>
-        <div class="text-4xl"><strong>Do not</strong> leave this page!</div>
+      <div class="container mx-auto flex flex-col justify-around">
+        <h2 class="text-2xl">
+          <span v-if="O === null">Waiting for player...</span>
+          <span v-else-if="winner">{{ winner }} is the winner!</span>
+          <span v-else-if="myTurn">It's your turn</span>
+          <span v-else>Waiting for {{ O }} to play</span>
+        </h2>
+        <div class="flex flex-col">
+          <div
+            v-for="(h, hindex) in grid"
+            :key="hindex"
+            class="flex"
+            :class="{ 'border-t-2': hindex }"
+          >
+            <div
+              v-for="(v, vindex) in h"
+              :key="vindex"
+              v-text="v"
+              class="h-16 w-16"
+              :class="{ 'border-l-2': vindex }"
+            ></div>
+          </div>
+        </div>
+        <div class="text-2xl">
+          Log in at {{ gameURL }} - Game ID: {{ gameId }}
+        </div>
       </div>
     </div>
   </div>
@@ -94,22 +116,15 @@ export default {
 
       Object.keys(response.data).forEach(i => (this[i] = response.data[i]));
 
-      // this.gameId = response.gameId;
-      // this.X = response.X;
-      // this.O = response.O;
-      // this.marker = response.marker;
-      // this.grid = response.grid;
-      // this.turn = response.turn;
-      // this.observers = response.observers;
-
       this.pusher
         .subscribe('hamontjs')
         .bind('tictactoe-' + this.gameId, this.updateGame);
     },
 
     updateGame(data) {
-      this.results = data;
-      this.stage = 'results';
+      if (data.O) {
+        this.O = data.O;
+      }
     },
   },
   computed: {
@@ -118,6 +133,12 @@ export default {
     },
     newGameDisabled() {
       return this.name === '';
+    },
+    gameURL() {
+      return process.env.VUE_APP_HOST + '/tictactoe';
+    },
+    myTurn() {
+      return this[this.turn] === this.name;
     },
     winner() {
       if (
