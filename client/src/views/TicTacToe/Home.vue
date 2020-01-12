@@ -70,6 +70,8 @@ export default {
       name: '',
       game: '',
       gameId: null,
+      X: null,
+      O: null,
       grid: [
         [null, null, null],
         [null, null, null],
@@ -77,6 +79,7 @@ export default {
       ],
       marker: null,
       turn: null,
+      observers: [],
     };
   },
   methods: {
@@ -89,14 +92,19 @@ export default {
         },
       );
 
-      this.gameId = response.gameId;
-      this.marker = response.marker;
-      this.grid = response.grid;
-      this.turn = response.turn;
+      Object.keys(response.data).forEach(i => (this[i] = response.data[i]));
+
+      // this.gameId = response.gameId;
+      // this.X = response.X;
+      // this.O = response.O;
+      // this.marker = response.marker;
+      // this.grid = response.grid;
+      // this.turn = response.turn;
+      // this.observers = response.observers;
 
       this.pusher
         .subscribe('hamontjs')
-        .bind('tictactoe-' + this.game, this.receiveAnswer);
+        .bind('tictactoe-' + this.gameId, this.updateGame);
     },
 
     updateGame(data) {
