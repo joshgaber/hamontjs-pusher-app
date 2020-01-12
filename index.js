@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const port = process.env.PORT || 3000;
 
 const Pusher = require('pusher');
@@ -11,13 +13,17 @@ const pusher = new Pusher({
   useTLS: true,
 });
 
-app.post('/api/guess', function(req, res) {
+app.use(cors());
+app.use(bodyParser.json());
+
+app.post('/api/jellybean/guess', function(req, res) {
+  console.log(req);
   const { name, guess } = req.body;
   pusher.trigger('hamontjs', 'jellybean-guess', { name, guess });
   res.send();
 });
 
-app.post('/api/results', function(req, res) {
+app.post('/api/jellybean/results', function(req, res) {
   const { name, guess } = req.body;
   pusher.trigger('hamontjs', 'jellybean-winner', { name, guess });
   res.send();
