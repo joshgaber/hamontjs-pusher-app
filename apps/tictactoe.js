@@ -7,26 +7,25 @@ let games = {};
 router.post('/api/tictactoe/join', function(req, res) {
   let response = {};
   let { name, game } = req.body;
-  if (game && games.hasOwnProperty(game)) {
-    game = game.toUppercase();
+  if (game && games.hasOwnProperty(game.toLowerCase())) {
+    game = game.toLowerCase();
     if (!games[game].O) {
       games[game].O = name;
+      response = games[game];
       response.marker = 'O';
       pusher.trigger('hamontjs', 'tictactoe-' + game, {
         O: name,
       });
     } else {
       games[game].observers.push(name);
+      response = games[game];
       response.marker = null;
       pusher.trigger('hamontjs', 'tictactoe-' + game, {
         observer: name,
       });
     }
-
-    response.grid = games[game].grid;
-    response.observers = games[game].observers;
   } else {
-    const gameId = game ? game.toUppercase() : newGameId();
+    const gameId = game ? game.toLowerCase() : newGameId();
     games[gameId] = {
       gameId,
       X: name,
