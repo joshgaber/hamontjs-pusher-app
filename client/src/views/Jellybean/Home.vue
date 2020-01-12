@@ -26,13 +26,13 @@
           placeholder="Eg., 36"
         />
         <button
-          type="button"
           :disabled="submitDisabled"
-          class="block w-full text-2xl text-white py-2 rounded border border-purple-600 select-none"
+          class="block w-full text-2xl text-white py-2 rounded border border-purple-600"
           :class="{
             'bg-purple-300 hover:bg-purple-300 pointer-events-none cursor-not-allowed': submitDisabled,
             'bg-purple-500 hover:bg-purple-700': !submitDisabled,
           }"
+          @click="submitGuess"
         >
           Submit
         </button>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import Pusher from 'pusher';
+import Pusher from 'pusher-js';
 import axios from 'axios';
 
 export default {
@@ -88,7 +88,10 @@ export default {
   },
   methods: {
     async submitGuess() {
-      await axios.post('/api/guess', { name: this.name, guess: this.guess });
+      await axios.post(process.env.VUE_APP_API + '/api/jellybean/guess', {
+        name: this.name,
+        guess: this.guess,
+      });
       this.stage = 'waiting';
       this.pusher
         .subscribe('hamontjs')
