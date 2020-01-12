@@ -80,10 +80,10 @@ export default {
     };
   },
   methods: {
-    async submitGuess() {
-      await axios.post(process.env.VUE_APP_API + '/api/jellybean/guess', {
+    async joinGame(game = null) {
+      await axios.post(process.env.VUE_APP_API + '/api/tictactoe/join', {
         name: this.name,
-        guess: this.guess,
+        game,
       });
       this.pusher
         .subscribe('hamontjs')
