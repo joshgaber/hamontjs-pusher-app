@@ -26,7 +26,10 @@
         </button>
       </div>
     </div>
-    <div v-show="loggedIn" class="h-full container m-auto py-4 flex flex-col">
+    <div
+      v-show="loggedIn"
+      class="h-full container m-auto px-2 py-4 flex flex-col"
+    >
       <div class="flex flex-initial border border-purple-600 rounded">
         <textarea
           v-model="message"
