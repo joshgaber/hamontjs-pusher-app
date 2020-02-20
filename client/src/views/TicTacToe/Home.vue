@@ -90,7 +90,9 @@
           </div>
         </div>
         <div class="text-lg lg:text-2xl">
-          Log in at {{ gameURL }} - Game ID: {{ gameId }}
+          Log in at
+          <span class="text-purple-600 font-bold">{{ gameURL }}</span> - Game
+          ID: <span class="text-purple-600 font-bold">{{ gameId }}</span>
         </div>
       </div>
     </div>
